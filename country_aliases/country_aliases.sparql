@@ -1,0 +1,27 @@
+SELECT DISTINCT ?iso3c ?iso2c (LANG(?label) AS ?language) (LANG(?label)=?official_language_code AS ?is_official_language) ?label ?label_type
+WHERE {
+  {
+    ?country wdt:P31 wd:Q6256.
+    ?country wdt:P297 ?iso2c.
+    ?country wdt:P298 ?iso3c.
+    ?country rdfs:label ?label.
+    OPTIONAL {
+      ?country wdt:P37 ?official_language.
+      ?official_language wdt:P218 ?official_language_code.
+    }
+    BIND("official" AS ?label_type)
+  }
+  UNION
+  {
+    ?country wdt:P31 wd:Q6256.
+    ?country wdt:P297 ?iso2c.
+    ?country wdt:P298 ?iso3c.
+    ?country skos:altLabel ?label.
+    OPTIONAL {
+      ?country wdt:P37 ?official_language.
+      ?official_language wdt:P218 ?official_language_code.
+    }
+    BIND("alias" AS ?label_type)
+  }
+}
+ORDER BY ASC(?iso3c) ASC(?language)
